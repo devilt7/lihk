@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life in the Hong Kong: 百萬富翁</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: radial-gradient(circle at center, #071330 0%, #030818 60%, #00030a 100%);
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .title-font {
+      font-family: 'Cinzel', 'Noto Sans TC', serif;
+    }
+
+    /* Classic Millionaire Lozenge / Hexagonal Option Buttons */
+    .option-btn {
+      position: relative;
+      background: linear-gradient(180deg, #10214a 0%, #070d24 100%);
+      border: 2px solid #5a7bb5;
+      box-shadow: 0 0 10px rgba(90, 123, 181, 0.4);
+      transition: all 0.25s ease;
+      clip-path: polygon(14px 0%, calc(100% - 14px) 0%, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0% 50%);
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: linear-gradient(180deg, #1b387e 0%, #0d1a49 100%);
+      border-color: #f7b731;
+      box-shadow: 0 0 18px rgba(247, 183, 49, 0.6);
+      transform: scale(1.01);
+    }
+
+    /* Selected state (Amber / Orange) */
+    .option-btn.selected {
+      background: linear-gradient(180deg, #e67e22 0%, #b33939 100%) !important;
+      border-color: #ffd32a !important;
+      box-shadow: 0 0 25px rgba(255, 211, 42, 0.8) !important;
+      animation: pulse-gold 1s infinite alternate;
+    }
+
+    /* Correct state (Green) */
+    .option-btn.correct {
+      background: linear-gradient(180deg, #20bf6b 0%, #0b6623 100%) !important;
+      border-color: #2ed573 !important;
+      box-shadow: 0 0 30px rgba(46, 213, 115, 0.9) !important;
+      animation: flash-correct 0.6s 3;
+    }
+
+    /* Wrong state (Red) */
+    .option-btn.wrong {
+      background: linear-gradient(180deg, #eb3b5a 0%, #771224 100%) !important;
+      border-color: #fc5c65 !important;
+      box-shadow: 0 0 30px rgba(235, 59, 90, 0.9) !important;
+    }
+
+    .option-btn.eliminated {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* Question Frame */
+    .question-box {
+      background: linear-gradient(180deg, #122147 0%, #080d22 100%);
+      border: 3px solid #6b8ec4;
+      box-shadow: 0 0 20px rgba(107, 142, 196, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      clip-path: polygon(18px 0%, calc(100% - 18px) 0%, 100% 50%, calc(100% - 18px) 100%, 18px 100%, 0% 50%);
+    }
+
+    /* Lifeline Buttons */
+    .lifeline-btn {
+      background: radial-gradient(circle, #1a2a5e 0%, #09122f 100%);
+      border: 2px solid #5a7bb5;
+      transition: all 0.3s;
+    }
+    .lifeline-btn:hover:not(:disabled) {
+      border-color: #ffd32a;
+      box-shadow: 0 0 15px rgba(255, 211, 42, 0.7);
+      transform: translateY(-2px);
+    }
+    .lifeline-btn:disabled {
+      opacity: 0.35;
+      filter: grayscale(1);
+      cursor: not-allowed;
+      border-color: #4b4b4b;
+    }
+
+    /* Animations */
+    @keyframes pulse-gold {
+      0% { box-shadow: 0 0 12px rgba(255, 211, 42, 0.4); }
+      100% { box-shadow: 0 0 28px rgba(255, 211, 42, 0.9); }
+    }
+
+    @keyframes flash-correct {
+      0%, 100% { background: #2ed573; color: #fff; }
+      50% { background: #070d24; color: #2ed573; }
+    }
+
+    /* Custom scrollbar for modern looks */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030818;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #25407d;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="flex flex-col justify-between selection:bg-amber-400 selection:text-black">
+
+  <!-- TOP HEADER / NAV BAR -->
+  <header class="w-full bg-[#03091e]/90 backdrop-blur border-b border-[#203a70] px-4 py-3 sticky top-0 z-40 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 via-amber-600 to-yellow-800 flex items-center justify-center font-black text-black text-xl shadow-lg border border-amber-300">
+        港
+      </div>
+      <div>
+        <h1 class="text-base sm:text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-100 to-amber-400">
+          LIFE IN HK: 百萬富翁
+        </h1>
+        <p class="text-[11px] text-blue-300 hidden sm:block">香港生活與文化知識大測驗 (Life in the Hong Kong Quiz)</p>
+      </div>
+    </div>
+
+    <!-- Top Right Controls -->
+    <div class="flex items-center space-x-2">
+      <!-- Sound Toggle -->
+      <button id="soundToggleBtn" class="p-2 rounded-lg bg-blue-950/60 border border-blue-700/60 text-blue-200 hover:text-white hover:border-amber-400 transition text-sm flex items-center gap-1.5" title="開關聲音">
+        <span id="soundIcon">🔊</span>
+      </button>
+
+      <!-- Walk Away Button -->
+      <button id="walkAwayBtn" onclick="millionaireGame.confirmWalkAway()" class="hidden sm:inline-flex items-center gap-1 bg-red-950/70 hover:bg-red-800 text-red-200 hover:text-white border border-red-600 text-xs sm:text-sm font-bold px-3 py-1.5 rounded-md transition shadow">
+        <span>💰</span> 見好就收
+      </button>
+
+      <!-- Ladder Toggle (Mobile) -->
+      <button onclick="millionaireGame.toggleMobileLadder()" class="lg:hidden p-2 rounded-lg bg-blue-900/60 border border-blue-600 text-blue-200 text-sm flex items-center gap-1">
+        <span>🏆</span> 獎金榜
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN GAME WRAPPER -->
+  <main class="flex-1 w-full max-w-7xl mx-auto p-2 sm:p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+    
+    <!-- LEFT 3 COLS: ARENA (Lifelines + Question + Answers) -->
+    <section class="lg:col-span-3 flex flex-col justify-between min-h-[78vh] space-y-4">
+      
+      <!-- TOP STATUS & LIFELINES -->
+      <div class="bg-[#06102b]/80 border border-[#1d356c] rounded-2xl p-3 sm:p-4 shadow-xl flex flex-wrap items-center justify-between gap-3">
+        <!-- Question Badge & Current Target -->
+        <div class="flex items-center gap-3">
+          <div class="bg-blue-950 px-3 py-1.5 rounded-lg border border-blue-700">
+            <span class="text-xs text-blue-300 uppercase tracking-widest block">當前題目</span>
+            <span id="currentQuestionNumDisplay" class="text-lg font-black text-amber-300">第 1 / 15 題</span>
+          </div>
+          <div class="bg-blue-950 px-3 py-1.5 rounded-lg border border-blue-700">
+            <span class="text-xs text-blue-300 uppercase tracking-widest block">本題獎金</span>
+            <span id="currentValueDisplay" class="text-lg font-black text-emerald-400">$1,000</span>
+          </div>
+          <div id="safetyBadge" class="hidden sm:block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-900/40 text-blue-300 border border-blue-500/30">
+            難度：基礎生活
+          </div>
+        </div>
+
+        <!-- 3 Classic Lifelines (三大錦囊) -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <!-- 50:50 -->
+          <button id="lifeline5050" onclick="millionaireGame.use5050()" class="lifeline-btn px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm font-black text-amber-300 flex items-center gap-1 shadow">
+            <span>✂️</span> 50:50
+          </button>
+          <!-- Phone a Friend -->
+          <button id="lifelinePhone" onclick="millionaireGame.usePhoneAFriend()" class="lifeline-btn px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm font-black text-blue-300 flex items-center gap-1 shadow">
+            <span>📞</span> 打電話
+          </button>
+          <!-- Ask Audience -->
+          <button id="lifelineAudience" onclick="millionaireGame.useAudience()" class="lifeline-btn px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm font-black text-cyan-300 flex items-center gap-1 shadow">
+            <span>👥</span> 問觀眾
+          </button>
+        </div>
+      </div>
+
+      <!-- QUESTION DISPLAY AREA -->
+      <div class="relative py-2 sm:py-6 flex-1 flex flex-col justify-center">
+        <!-- Visual Accent Bar -->
+        <div class="w-full flex items-center justify-center mb-1">
+          <div class="h-[2px] w-20 bg-gradient-to-r from-transparent to-amber-400"></div>
+          <span class="mx-3 text-[11px] font-bold tracking-widest text-amber-400/80 uppercase">HONG KONG LIFE KNOWLEDGE</span>
+          <div class="h-[2px] w-20 bg-gradient-to-l from-transparent to-amber-400"></div>
+        </div>
+
+        <!-- Question Box with classic lozenge clipping -->
+        <div class="question-box w-full px-6 py-6 sm:px-12 sm:py-9 text-center my-auto transition duration-300">
+          <div class="text-xs text-blue-400 font-semibold mb-2" id="questionCategory">【類別】</div>
+          <h2 id="questionText" class="text-lg sm:text-2xl md:text-3xl font-bold tracking-wide leading-relaxed text-white drop-shadow">
+            正在準備香港百萬富翁題目...
+          </h2>
+        </div>
+      </div>
+
+      <!-- 4 ANSWER OPTIONS (A, B, C, D) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 pt-2">
+        <!-- Option A -->
+        <button id="optBtn0" onclick="millionaireGame.selectOption(0)" class="option-btn w-full py-4 px-6 text-left flex items-center group">
+          <span class="text-amber-400 font-black text-base sm:text-lg mr-3 group-hover:scale-110 transition-transform">A:</span>
+          <span id="optText0" class="text-sm sm:text-base font-semibold text-slate-100">選項 A</span>
+        </button>
+
+        <!-- Option B -->
+        <button id="optBtn1" onclick="millionaireGame.selectOption(1)" class="option-btn w-full py-4 px-6 text-left flex items-center group">
+          <span class="text-amber-400 font-black text-base sm:text-lg mr-3 group-hover:scale-110 transition-transform">B:</span>
+          <span id="optText1" class="text-sm sm:text-base font-semibold text-slate-100">選項 B</span>
+        </button>
+
+        <!-- Option C -->
+        <button id="optBtn2" onclick="millionaireGame.selectOption(2)" class="option-btn w-full py-4 px-6 text-left flex items-center group">
+          <span class="text-amber-400 font-black text-base sm:text-lg mr-3 group-hover:scale-110 transition-transform">C:</span>
+          <span id="optText2" class="text-sm sm:text-base font-semibold text-slate-100">選項 C</span>
+        </button>
+
+        <!-- Option D -->
+        <button id="optBtn3" onclick="millionaireGame.selectOption(3)" class="option-btn w-full py-4 px-6 text-left flex items-center group">
+          <span class="text-amber-400 font-black text-base sm:text-lg mr-3 group-hover:scale-110 transition-transform">D:</span>
+          <span id="optText3" class="text-sm sm:text-base font-semibold text-slate-100">選項 D</span>
+        </button>
+      </div>
+
+      <!-- Action Confirmation & Walk Away row (Mobile only) -->
+      <div class="sm:hidden flex items-center justify-between pt-2">
+        <button onclick="millionaireGame.confirmWalkAway()" class="w-full bg-red-950/70 hover:bg-red-900 border border-red-700 text-red-200 font-bold py-2 px-3 rounded-lg text-sm">
+          💰 見好就收（拿走當前保險獎金）
+        </button>
+      </div>
+
+    </section>
+
+    <!-- RIGHT 1 COL: MONEY LADDER (獎金階梯) -->
+    <aside id="ladderSidebar" class="hidden lg:block bg-[#050e26]/90 border border-[#1c3369] rounded-2xl p-4 shadow-2xl backdrop-blur">
+      <div class="text-center pb-3 border-b border-blue-900/60 mb-2">
+        <h3 class="text-sm font-black text-amber-300 tracking-wider">獎金累積榜 (HKD)</h3>
+        <p class="text-[11px] text-blue-400">設有第 5 及 10 題兩道保險線</p>
+      </div>
+
+      <!-- 15 rungs ladder: top is Q15, bottom is Q1 -->
+      <div id="ladderContainer" class="flex flex-col space-y-1 text-sm font-bold">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- MODAL / POPUPS (LIFELINES, EXPLANATIONS, CONFIRMATIONS) -->
+  
+  <!-- Lifeline modal: Phone a Friend -->
+  <div id="phoneModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#0b1638] border-2 border-amber-400 max-w-md w-full rounded-2xl p-6 text-center shadow-2xl animate-fade-in">
+      <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-blue-900 flex items-center justify-center text-3xl border border-blue-400">
+        📞
+      </div>
+      <h3 id="phoneFriendName" class="text-lg font-bold text-amber-300 mb-1">連線朋友中...</h3>
+      <p id="phoneFriendRole" class="text-xs text-blue-300 mb-4">香港通識達人</p>
+      <div class="bg-[#050c21] p-4 rounded-xl border border-blue-800 text-left text-sm leading-relaxed text-blue-100 mb-5 italic" id="phoneFriendText">
+        「喂？等我睇睇先...」
+      </div>
+      <button onclick="document.getElementById('phoneModal').classList.add('hidden')" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-black py-2.5 rounded-lg transition shadow-lg">
+        返回作答
+      </button>
+    </div>
+  </div>
+
+  <!-- Lifeline modal: Ask Audience -->
+  <div id="audienceModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#0b1638] border-2 border-cyan-400 max-w-md w-full rounded-2xl p-6 text-center shadow-2xl animate-fade-in">
+      <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-cyan-950 flex items-center justify-center text-3xl border border-cyan-400">
+        👥
+      </div>
+      <h3 class="text-lg font-bold text-cyan-300 mb-1">現場觀眾投票結果</h3>
+      <p class="text-xs text-blue-300 mb-4">100 位香港現場觀眾即時投票比例</p>
+
+      <!-- Bar charts -->
+      <div class="space-y-3 mb-6 text-left" id="audienceBars">
+        <!-- populated dynamically -->
+      </div>
+
+      <button onclick="document.getElementById('audienceModal').classList.add('hidden')" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-black py-2.5 rounded-lg transition shadow-lg">
+        返回作答
+      </button>
+    </div>
+  </div>
+
+  <!-- Question Explanation Modal -->
+  <div id="explanationModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#0b1738] border-2 border-blue-400 max-w-lg w-full rounded-2xl p-6 shadow-2xl">
+      <div class="flex items-center gap-3 mb-3">
+        <span id="explanationIcon" class="text-3xl">✅</span>
+        <div>
+          <h3 id="explanationTitle" class="text-xl font-bold text-white">答對了！</h3>
+          <p id="explanationSubtitle" class="text-xs text-blue-300">香港知識點解析 (Life in HK Fact)</p>
+        </div>
+      </div>
+      <div class="bg-[#060c22] p-4 rounded-xl border border-blue-900/80 mb-5 text-sm leading-relaxed text-blue-100" id="explanationContent">
+        詳細背景資料...
+      </div>
+      <button id="nextQuestionBtn" onclick="millionaireGame.proceedAfterExplanation()" class="w-full bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black font-black py-3 rounded-xl transition text-base shadow-lg">
+        下一題 ➜
+      </button>
+    </div>
+  </div>
+
+  <!-- Game Over / Victory Modal -->
+  <div id="endGameModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-gradient-to-b from-[#0b1942] to-[#040817] border-2 border-amber-400 max-w-lg w-full rounded-3xl p-6 sm:p-8 text-center shadow-2xl">
+      <div id="endGameIcon" class="text-6xl mb-3">🏆</div>
+      <h2 id="endGameTitle" class="text-2xl sm:text-3xl font-black text-amber-300 mb-2 title-font">
+        恭喜獲得百萬大獎！
+      </h2>
+      <p id="endGameSubtitle" class="text-sm text-blue-200 mb-6">你已成為真正的「香港通」！</p>
+
+      <div class="bg-[#07112d] border border-blue-800 rounded-2xl p-4 sm:p-6 mb-6">
+        <span class="text-xs text-blue-400 uppercase tracking-widest block mb-1">最終贏得獎金</span>
+        <div id="endGamePrize" class="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">
+          HK$ 1,000,000
+        </div>
+        <div id="endGameStats" class="mt-3 pt-3 border-t border-blue-900/60 text-xs text-blue-300 flex justify-around">
+          <span>完成題數：<b id="endGameCount" class="text-white">15</b></span>
+          <span>錦囊消耗：<b id="endGameLifelines" class="text-white">0 / 3</b></span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button onclick="millionaireGame.restartGame()" class="flex-1 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 text-black font-black py-3 px-4 rounded-xl transition shadow-lg text-sm sm:text-base">
+          🔄 重新挑戰
+        </button>
+        <button onclick="millionaireGame.shareResult()" class="flex-1 bg-blue-800 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition border border-blue-500 text-sm sm:text-base">
+          📋 複製成績分享
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Walk Away Confirmation Modal -->
+  <div id="walkAwayModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#0b1638] border-2 border-yellow-500 max-w-sm w-full rounded-2xl p-6 text-center shadow-2xl">
+      <div class="text-4xl mb-2">🤔</div>
+      <h3 class="text-lg font-bold text-yellow-300 mb-2">確定「見好就收」？</h3>
+      <p class="text-xs text-blue-200 mb-4 leading-relaxed">
+        如果你現在選擇離開，你可以穩健帶走前一題累積的獎金：<br>
+        <span id="walkAwayPrizeText" class="text-base font-black text-emerald-400 mt-1 block">HK$ 0</span>
+      </p>
+      <div class="flex gap-2">
+        <button onclick="millionaireGame.executeWalkAway()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg text-sm">
+          確定帶走獎金
+        </button>
+        <button onclick="document.getElementById('walkAwayModal').classList.add('hidden')" class="flex-1 bg-blue-900 hover:bg-blue-800 text-blue-200 font-bold py-2 rounded-lg text-sm">
+          繼續挑戰
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-[#020510] border-t border-blue-950/80 py-2.5 px-4 text-center text-xs text-blue-400/80">
+    <span>💡 題目庫涵蓋香港食住行、歷史地理、俚語文化及法律常識 | 可部署於 GitHub Pages</span>
+  </footer>
+
+  <!-- SCRIPT: GAME LOGIC & SOUND ENGINE & QUESTION BANK -->
+  <script>
+    /* =====================================================================
+     * 1. NATIVE WEB AUDIO SYNTHESIZER (零外部音訊依賴，保證 GitHub Pages 100% 播放)
+     * ===================================================================== */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type = 'sine', duration = 0.3, gainVal = 0.1) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          console.warn("Audio error:", e);
+        }
+      }
+
+      // 經典懸疑選擇音
+      playSelect() {
+        this.playTone(440, 'triangle', 0.25, 0.12);
+      }
+
+      // 答對音效（大調和弦揚昇）
+      playCorrect() {
+        if (!this.enabled) return;
+        this.init();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            this.playTone(freq, 'sine', 0.4, 0.15);
+          }, idx * 110);
+        });
+      }
+
+      // 答錯音效（沉重低音警報）
+      playWrong() {
+        if (!this.enabled) return;
+        this.init();
+        const notes = [220, 196, 174.61, 146.83];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            this.playTone(freq, 'sawtooth', 0.4, 0.15);
+          }, idx * 130);
+        });
+      }
+
+      // 錦囊音效（風鈴感）
+      playLifeline() {
+        if (!this.enabled) return;
+        this.init();
+        [880, 1174.66, 1396.91, 1760].forEach((freq, idx) => {
+          setTimeout(() => {
+            this.playTone(freq, 'triangle', 0.3, 0.1);
+          }, idx * 80);
+        });
+      }
+
+      // 百萬大獎勝利號角
+      playVictory() {
+        if (!this.enabled) return;
+        this.init();
+        const fanfare = [523.25, 523.25, 523.25, 659.25, 783.99, 1046.5];
+        fanfare.forEach((freq, idx) => {
+          setTimeout(() => {
+            this.playTone(freq, 'square', 0.4, 0.15);
+          }, idx * 140);
+        });
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* =====================================================================
+     * 2. COMPREHENSIVE HONG KONG QUESTION BANK (300 題架構：分三級深度)
+     * ===================================================================== */
+    const QUESTION_BANK = {
+      // -------------------------------------------------------------
+      // TIER 1: EASY (第 1 - 5 題：日常生活、港鐵、茶餐廳、基本法律常識)
+      // -------------------------------------------------------------
+      tier1: [
+        {
+          cat: "茶餐廳文化",
+          q: "在香港茶餐廳中，如果想點一杯「走糖」的奶茶，通常應該點以下哪一項？",
+          opts: ["茶走", "啡走", "齋啡", "凍檸茶"],
+          a: 0,
+          fact: "「茶走」指奶茶不加白砂糖，改加煉奶；因為煉奶沉底且較香滑，所以稱為「茶走」。"
+        },
+        {
+          cat: "交通生活",
+          q: "香港的公共小型巴士（小巴），按車頂顏色主要分為紅頂和哪一種顏色？",
+          opts: ["綠頂", "黃頂", "藍頂", "黑頂"],
+          a: 0,
+          fact: "香港小巴分為綠色專線小巴（行駛固定路線及收費）與紅色公共小巴（路線及收費較具彈性）。"
+        },
+        {
+          cat: "交通常識",
+          q: "香港市民日常乘搭公共交通工具最常使用的無接觸智慧儲值卡是？",
+          opts: ["八達通", "悠遊卡", "Suica", "易通卡"],
+          a: 0,
+          fact: "八達通卡於 1997 年正式推出，是全球最早廣泛應用於大眾交通及零售的智慧卡系統之一。"
+        },
+        {
+          cat: "日常粵語",
+          q: "在香港，俗稱「搭11號車」是指以哪種方式出行？",
+          opts: ["步行雙腳行路", "搭乘雙層巴士", "搭乘天星小輪", "搭乘山頂纜車"],
+          a: 0,
+          fact: "廣東話將兩條腿比喻為數字「11」，因此「搭11號車」即是徒步走去的意思。"
+        },
+        {
+          cat: "飲食生活",
+          q: "香港常見的「絲襪奶茶」，其名稱由來是因為什麼？",
+          opts: ["濾袋染成茶褐色外形像絲襪", "真的使用尼龍絲襪過濾", "由穿絲襪的空姐發明", "喝了之後皮膚像絲襪般滑"],
+          a: 0,
+          fact: "絲襪奶茶由中環蘭芳園林木河先生創製，是以特製白棉紗網沖茶，因長期沖煮被茶葉染成棕褐色，狀似絲襪而得名。"
+        },
+        {
+          cat: "香港地理",
+          q: "維多利亞港位於哪兩個主要地域之間？",
+          opts: ["香港島與九龍半島", "新界與大嶼山", "九龍與西貢", "青衣與荃灣"],
+          a: 0,
+          fact: "維多利亞港是位於香港島與九龍半島之間的海港，其深水港優勢奠定了香港轉口貿易港的基礎。"
+        },
+        {
+          cat: "香港日常",
+          q: "香港日常生活中俗稱的「叮叮」是指哪一種交通工具？",
+          opts: ["香港電車", "港鐵輕鐵", "山頂纜車", "天星小輪"],
+          a: 0,
+          fact: "香港電車在行駛時司機會踩動腳踏發出「叮叮、叮叮」的警示鈴聲，因此市民親切地稱之為「叮叮車」。"
+        },
+        {
+          cat: "茶餐廳文化",
+          q: "在茶餐廳點餐時，術語「OT」代表哪一款飲品？",
+          opts: ["熱檸檬茶", "凍檸檬水", "阿華田", "熱奶茶"],
+          a: 0,
+          fact: "「O」取自檸檬的英文 Lemon 的諧音或形狀，而「T」代表 Tea（茶），合起來就是檸檬茶（OT）。"
+        },
+        {
+          cat: "香港氣象",
+          q: "香港天文台發出的熱帶氣旋警告信號中，代表強風準備吹襲市區的「八號烈風或暴風信號」通常簡稱為？",
+          opts: ["打八號風球", "紅雨", "黑雨", "十號颶風"],
+          a: 0,
+          fact: "香港市民慣稱熱帶氣旋信號為「風球」，掛八號信號即表示市區風力達到烈風程度，通常會停工停課。"
+        },
+        {
+          cat: "香港地標",
+          q: "位於香港大嶼山昂坪的著名大佛雕像全稱為？",
+          opts: ["天壇大佛", "樂山大佛", "黃大仙大佛", "萬佛大佛"],
+          a: 0,
+          fact: "天壇大佛坐落於昂坪寶蓮禪寺旁，是全球最高的一座戶外青銅座佛之一。"
+        },
+        {
+          cat: "香港法例",
+          q: "在香港，市民及旅客在公眾地方亂拋垃圾或隨地吐痰，法定定額罰款金額目前為？",
+          opts: ["HK$ 3,000", "HK$ 1,500", "HK$ 500", "HK$ 10,000"],
+          a: 0,
+          fact: "香港政府於 2023 年 10 月起將亂拋垃圾及隨地吐痰的定額罰款由 HK$1,500 調高至 HK$3,000。"
+        },
+        {
+          cat: "茶餐廳俚語",
+          q: "茶餐廳夥計如果喊出「靚仔」，通常指的是哪樣食物？",
+          opts: ["白飯", "白粥", "荷包蛋", "例湯"],
+          a: 0,
+          fact: "在茶餐廳暗語中，「靚仔」代表白米飯，而「靚女」則代表白粥。"
+        },
+        {
+          cat: "日常常識",
+          q: "香港市民年滿幾歲必須申領香港成人身份證？",
+          opts: ["18 歲", "16 歲", "21 歲", "20 歲"],
+          a: 0,
+          fact: "根據香港法例，凡年滿 18 歲的香港居民，必須在 30 天內申請換領成人身份證。"
+        },
+        {
+          cat: "公共交通",
+          q: "香港的士（計程車）按行駛區域分為三種顏色，其中只可在新界行駛的是哪種顏色？",
+          opts: ["綠色", "紅色", "藍色", "黃色"],
+          a: 0,
+          fact: "香港的士分為市區的士（紅色）、新界的士（綠色）以及大嶼山的士（藍色）。"
+        },
+        {
+          cat: "傳統節慶",
+          q: "香港農曆五月初五端午節，最有特色的傳統海難競渡活動是？",
+          opts: ["划龍舟", "搶包山", "舞火龍", "賽馬"],
+          a: 0,
+          fact: "香港多個沿海地區如赤柱、沙田、大澳等地每年端午節皆會舉行盛大的國際龍舟邀請賽及競渡活動。"
+        },
+        {
+          cat: "港鐵常識",
+          q: "港鐵路網中，連接香港島柴灣至堅尼地城的鐵路綫是？",
+          opts: ["港島綫", "荃灣綫", "觀塘綫", "東鐵綫"],
+          a: 0,
+          fact: "港島綫於 1985 年通車，現時全線西起堅尼地城，東至柴灣，代表色為深藍色。"
+        },
+        {
+          cat: "街頭小食",
+          q: "香港著名的街頭小食「雞蛋仔」，傳統烘烤模具呈現的是什麼形狀？",
+          opts: ["蜂巢狀一顆顆小圓球", "方格格紋", "長條狀圓柱", "心形圖案"],
+          a: 0,
+          fact: "雞蛋仔源於 1950 年代香港，利用蛋漿倒進兩塊特製蜂巢狀鐵模中炭烤而成，形似迷你雞蛋。"
+        },
+        {
+          cat: "消費文化",
+          q: "香港人常去購買平價數碼電子產品與電腦配件的深水埗商場是？",
+          opts: ["黃金電腦商場", "海港城", "時代廣場", "置地廣場"],
+          a: 0,
+          fact: "深水埗黃金電腦商場及高登電腦中心自 1980 年代起即是香港著名的電子資訊產品集散地。"
+        },
+        {
+          cat: "香港法定貨幣",
+          q: "香港流通的最高面額紙幣是多少港元？",
+          opts: ["1,000 元", "500 元", "2,000 元", "10,000 元"],
+          a: 0,
+          fact: "香港目前流通的最大面額紙幣為 1,000 港元，市民俗稱「金牛」。"
+        },
+        {
+          cat: "日常生活",
+          q: "香港的緊急求助電話號碼（報警、火警及救護車）是？",
+          opts: ["999", "911", "110", "119"],
+          a: 0,
+          fact: "香港沿用英國制式的緊急求助號碼「999」，可直通警務處、消防處及救護指揮中心。"
+        }
+      ],
+
+      // -------------------------------------------------------------
+      // TIER 2: MEDIUM (第 6 - 10 題：地理深度、殖民地歷史、俚語、流行影視、民俗)
+      // -------------------------------------------------------------
+      tier2: [
+        {
+          cat: "香港歷史",
+          q: "香港主權於哪一年由英國移交至中華人民共和國？",
+          opts: ["1997 年", "1984 年", "1999 年", "1990 年"],
+          a: 0,
+          fact: "1997 年 7 月 1 日零時，香港主權移交儀式在灣仔香港會議展覽中心新翼舉行，香港特別行政區正式成立。"
+        },
+        {
+          cat: "民間習俗",
+          q: "長洲每年農曆四月舉行的太平清醮活動中，最刺激且具代表性的傳統搶奪祭品比賽是？",
+          opts: ["搶包山", "搶火炮", "舞麒麟", "賽龍舟"],
+          a: 0,
+          fact: "長洲搶包山是國家級非物質文化遺產，參賽者需爬上由鋼架及平安包搭建的包山爭奪最高分數的包子。"
+        },
+        {
+          cat: "傳統節日",
+          q: "每逢中秋節，香港大坑居民會連續三晚舉行哪項傳統民俗巡遊以驅除瘟疫？",
+          opts: ["大坑舞火龍", "大坑舞獅", "大坑打小人", "大坑神功戲"],
+          a: 0,
+          fact: "大坑舞火龍起源於 1880 年，插滿長壽香的草龍穿梭大街小巷，已被列入國家級非物質文化遺產。"
+        },
+        {
+          cat: "香港地理",
+          q: "香港特別行政區境內最高的山峰是哪一座？",
+          opts: ["大帽山", "鳳凰山", "獅子山", "飛鵝山"],
+          a: 0,
+          fact: "大帽山位於新界中部，海拔 957 米，是香港最高峰，山頂建有香港天文台的天氣雷達站。"
+        },
+        {
+          cat: "港鐵演進",
+          q: "在港鐵沙中綫工程完成前，東鐵綫的南端終點站原本長期設於哪裡？",
+          opts: ["紅磡站", "金鐘站", "尖沙咀站", "九龍塘站"],
+          a: 0,
+          fact: "東鐵綫過海段於 2022 年通車延至金鐘前，近半個世紀的南面總站一直設於九龍的紅磡站。"
+        },
+        {
+          cat: "粵語俗語",
+          q: "廣東話俗語「食死貓」的真實意思是指？",
+          opts: ["無辜替他人背黑鍋", "吃了不新鮮的食物", "在比賽中吃零分", "去吃廉價大排檔"],
+          a: 0,
+          fact: "「食死貓」比喻受了莫須有的冤屈，被逼承認或承擔不是自己犯下的罪責。"
+        },
+        {
+          cat: "香港影視",
+          q: "由周星馳主演的經典喜劇《食神》中，主角最終在少林寺廚藝大賽製作了哪碗感動評審的飯？",
+          opts: ["黯然銷魂飯", "降龍十八掌飯", "乾炒牛河飯", "九品芝麻飯"],
+          a: 0,
+          fact: "這碗加入洋蔥令人流淚的叉燒煎蛋飯名為「黯然銷魂飯」，成為香港流行文化經典之作。"
+        },
+        {
+          cat: "香港地理",
+          q: "香港陸地面積最大的島嶼是哪一個？",
+          opts: ["大嶼山", "香港島", "南丫島", "青衣島"],
+          a: 0,
+          fact: "大嶼山面積約 147 平方公里，幾乎是香港島（約 78 平方公里）的兩倍大。"
+        },
+        {
+          cat: "發鈔銀行",
+          q: "以下哪一家銀行「不是」現時香港的三大法定發鈔銀行之一？",
+          opts: ["東亞銀行", "香港上海滙豐銀行", "渣打銀行（香港）", "中國銀行（香港）"],
+          a: 0,
+          fact: "香港目前的法定發鈔銀行僅有三間：滙豐銀行、渣打銀行及中國銀行（香港）；政府僅發行 10 元塑膠鈔票及硬幣。"
+        },
+        {
+          cat: "香港典故",
+          q: "俗稱「菠蘿包」的香港經典麵包，為甚麼會取名為菠蘿？",
+          opts: ["烘烤後脆皮龜裂表面狀似菠蘿", "傳統餡料真的有新鮮菠蘿肉", "由菠蘿產地菲律賓傳入", "麵團使用了菠蘿汁發酵"],
+          a: 0,
+          fact: "菠蘿包本身並無菠蘿成分，純粹因表面由砂糖、雞蛋、麵粉及豬油烘烤成的金黃凹凸脆皮貌似菠蘿（鳳梨）外皮而得名。"
+        },
+        {
+          cat: "行政區劃",
+          q: "香港目前劃分為多少個地方行政區（區議會分區）？",
+          opts: ["18 區", "16 區", "20 區", "12 區"],
+          a: 0,
+          fact: "香港自 1980 年代起劃分全港為 18 個行政區，包括港島 4 區、九龍 5 區及新界 9 區。"
+        },
+        {
+          cat: "民間信仰",
+          q: "香港鵝頸橋底最廣為人知的民間巫術除厄活動俗稱是什麼？",
+          opts: ["打小人", "問米", "求籤", "過火盆"],
+          a: 0,
+          fact: "銅鑼灣與灣仔交界的堅拿道天橋（鵝頸橋）底，長年有拜神婆用鞋底拍打紙小人，祈求驅除小人霉氣。"
+        },
+        {
+          cat: "殖民歷史",
+          q: "香港最後一任英屬香港總督（第 28 任總督）是誰？",
+          opts: ["彭定康 (Chris Patten)", "衛奕信 (David Wilson)", "尤德 (Edward Youde)", "麥理浩 (Murray MacLehose)"],
+          a: 0,
+          fact: "彭定康於 1992 年上任，至 1997 年 6 月 30 日午夜離港，是英國統治香港時期的最後一任港督。"
+        },
+        {
+          cat: "颱風警告",
+          q: "香港天文台的暴雨警告信號系統中，按嚴重程度由低至高依次為？",
+          opts: ["黃色 ➔ 紅色 ➔ 黑色", "藍色 ➔ 黃色 ➔ 紅色", "黃色 ➔ 橙色 ➔ 紅色", "白色 ➔ 紅色 ➔ 黑色"],
+          a: 0,
+          fact: "暴雨警告分為三級：黃色（每小時超過 30 毫米）、紅色（每小時超過 50 毫米）、黑色（每小時超過 70 毫米）。"
+        },
+        {
+          cat: "香港俚語",
+          q: "香港人口中的「大耳窿」通常是指從事哪種行業的人？",
+          opts: ["高利貸放數人", "當鋪老闆", "耳鼻喉科醫生", "珠寶金行買手"],
+          a: 0,
+          fact: "開埠初期有些印度或錫克籍高利貸放債人耳垂穿大洞戴耳環，市民戲稱其為「大耳窿」，後演變為高利貸代稱。"
+        },
+        {
+          cat: "地名由來",
+          q: "九龍半島「九龍」名稱的由來，相傳是宋少帝趙昺指著周圍八座山峰加上自己，湊合為哪九條龍？",
+          opts: ["八座山加上皇帝自己這條真龍", "九條流入維港的主要河流", "九個在此定居的九龍原居民家族", "九位抗元宋朝名將"],
+          a: 0,
+          fact: "相傳宋幼主南逃駐蹕九龍城，見周圍群山有八座（獅子山、飛鵝山等），稱有八條龍，大臣笑言皇上貴為天子也是真龍，合共九條龍。"
+        },
+        {
+          cat: "香港法規",
+          q: "在香港搭乘公共交通工具（如港鐵、巴士），在車廂內飲食違反相關規例會被？",
+          opts: ["票控罰款最高 HK$ 2,000", "記名警告一次", "沒收八達通", "強制勞動服務"],
+          a: 0,
+          fact: "根據《香港鐵路附例》，任何人不得在已付車費區域內進食或飲用任何飲品，最高可被罰款 2,000 港元。"
+        },
+        {
+          cat: "體育盛事",
+          q: "每年春季在香港大球場舉行、吸引全球數萬球迷打扮狂歡的國際頂級體育賽事是？",
+          opts: ["香港國際七人欖球賽 (Hong Kong Sevens)", "香港渣打馬拉松", "香港羽毛球公開賽", "省港盃足球賽"],
+          a: 0,
+          fact: "香港國際七人欖球賽自 1976 年起創辦，看台上的「南看台」狂歡化妝派對更是香港標誌性的國際盛事。"
+        },
+        {
+          cat: "香港電影",
+          q: "由王家衛執導、梁朝偉與張曼玉主演，取景於老香港金雀餐廳的代表作是？",
+          opts: ["《花樣年華》", "《春光乍洩》", "《重慶森林》", "《阿飛正傳》"],
+          a: 0,
+          fact: "《花樣年華》拍攝於 2000 年，以 1960 年代香港為背景，梁朝偉憑此片榮獲坎城影展最佳男主角獎。"
+        },
+        {
+          cat: "香港歷史",
+          q: "於 1970 年代推行九年免費教育、興建地下鐵路及成立廉政公署 (ICAC) 的著名港督是？",
+          opts: ["麥理浩 (Murray MacLehose)", "葛量洪 (Alexander Grantham)", "戴麟趾 (David Trench)", "楊慕琦 (Mark Young)"],
+          a: 0,
+          fact: "麥理浩爵士於 1971 至 1982 年任港督，推行十年建屋計劃、廉署、九年義務教育及郊野公園條例，深得港人愛戴。"
+        }
+      ],
+
+      // -------------------------------------------------------------
+      // TIER 3: HARD (第 11 - 15 題：香港冷知識、深度歷史條約、典故、老地名、非遺細節)
+      // -------------------------------------------------------------
+      tier3: [
+        {
+          cat: "條約歷史",
+          q: "清朝與英國簽訂的哪一條不平等條約，割讓了九龍半島界限街以南及昂船洲？",
+          opts: ["《北京條約》(1860年)", "《南京條約》(1842年)", "《展拓香港界址專條》(1898年)", "《辛丑和約》(1901年)"],
+          a: 0,
+          fact: "《南京條約》割讓香港島；1860年《北京條約》割讓九龍半島界限街以南；1898年《展拓香港界址專條》租借新界99年。"
+        },
+        {
+          cat: "香港老地名",
+          q: "跑馬地（Happy Valley）在香港開埠初期尚未建跑馬場前，原來的本土中文地名是？",
+          opts: ["黃泥涌", "赤柱坑", "掃桿埔", "大坑尾"],
+          a: 0,
+          fact: "跑馬地原是一片沼澤荒地，溪水夾帶黃泥傾瀉而下，故名「黃泥涌」。後來英軍闢為墓地與馬場，取名 Happy Valley。"
+        },
+        {
+          cat: "法律典故",
+          q: "香港終審法院大樓（舊最高法院大樓）頂部立有一尊手持天秤與寶劍、蒙眼的雕像，她代表的是希臘神話哪位正義女神？",
+          opts: ["泰美斯 (Themis)", "雅典娜 (Athena)", "阿佛洛狄忒 (Aphrodite)", "赫拉 (Hera)"],
+          a: 0,
+          fact: "泰美斯（Themis）矇眼代表公正無私、天秤代表衡量證據、利劍代表法律威嚴與制裁力。"
+        },
+        {
+          cat: "香港水務",
+          q: "1960年代香港曾遭遇嚴重水荒，迫使政府實施俗稱「幾多日供水一次」的嚴格制水措施？",
+          opts: ["每 4 日供水 4 小時", "每 2 日供水 1 小時", "每週供水 1 日", "每日供水 30 分鐘"],
+          a: 0,
+          fact: "1963年香港百年大旱，政府自6月1日起實行「4天供水1次，每次4小時」的極端制水，催生了興建東深供水工程。"
+        },
+        {
+          cat: "貨幣冷知識",
+          q: "香港十元硬幣由內外兩種金屬壓合而成（雙色硬幣），它最初於哪一年發行流通以取代綠色十元紙幣？",
+          opts: ["1993 年", "1997 年", "1988 年", "2002 年"],
+          a: 0,
+          fact: "香港政府於 1993 年推出洋紫荊圖案的雙色十元硬幣；後來因偽鈔問題，政府在 2002 年又重新發行十元塑質鈔票。"
+        },
+        {
+          cat: "街道典故",
+          q: "中環著名觀光石板街，其正式的法定官方街名為？",
+          opts: ["砵典乍街", "德己立街", "擺花街", "威靈頓街"],
+          a: 0,
+          fact: "砵典乍街以香港第一任總督砵典乍爵士（Sir Henry Pottinger）命名，由於斜坡鋪上花崗石塊，民間習慣俗稱石板街。"
+        },
+        {
+          cat: "非物質文化遺產",
+          q: "香港傳統「搭棚」工藝以安全快捷聞名世界，這種主要由毛竹和杉木建造的建築支架依賴哪種傳統繩索進行綁紥？",
+          opts: ["篾帶（水草/尼龍篾）", "鋼絲鐵線", "粗麻繩", "塑膠索帶"],
+          a: 0,
+          fact: "傳統竹棚師傅使用竹篾（現多用浸軟的特製尼龍篾）打「花結」扣緊竹竿，具高韌性與防滑震緩衝效果。"
+        },
+        {
+          cat: "香港地理極點",
+          q: "香港境內陸地最東面的海角是哪一個？",
+          opts: ["東平洲 / 短咀", "鶴咀", "分流", "白角"],
+          a: 0,
+          fact: "香港最東端位於西貢大浪咀（短咀）以及更東的大鵬灣東平洲島嶼；最南端則為蒲台島。"
+        },
+        {
+          cat: "歷史防禦",
+          q: "二次世界大戰期間，英軍在九龍與新界之間山嶺修築的防衛軍事要塞陣線被稱作？",
+          opts: ["醉酒灣防線 (Gin Drinkers' Line)", "麥理浩防線", "維多利亞防線", "青山要塞線"],
+          a: 0,
+          fact: "醉酒灣防線全長約 18 公里，橫跨葵涌、城門水塘、金山至沙田坳，1941 年 12 月香港保衛戰中被日軍攻破。"
+        },
+        {
+          cat: "交通歷史",
+          q: "香港第一條連接九龍半島與香港島海底行車隧道（海底隧道，俗稱紅隧）於哪一年正式通車？",
+          opts: ["1972 年", "1968 年", "1980 年", "1978 年"],
+          a: 0,
+          fact: "紅磡海底隧道於 1972 年 8 月通車，結束了香港島與九龍之間只能依賴渡輪交通的歷史。"
+        },
+        {
+          cat: "香港建築",
+          q: "香港中環的中銀大廈由國際著名建築大師貝聿銘設計，其外觀靈感源自哪種植物節節上升的象徵？",
+          opts: ["竹子（雨後春筍）", "洋紫荊花瓣", "榕樹氣根", "松樹"],
+          a: 0,
+          fact: "中銀大廈於 1990 年落成，幾何立體桁架柱狀結構模仿節節高陞的竹筍，象徵朝氣蓬勃、生生不息。"
+        },
+        {
+          cat: "香港典故",
+          q: "在中環皇后像廣場，今天佇立的唯一一座銅像並非維多利亞女王，而是哪位對香港有重大貢獻的人物？",
+          opts: ["昃臣爵士 (Sir Thomas Jackson)", "麥理浩總督", "孫中山先生", "砵甸乍總督"],
+          a: 0,
+          fact: "昃臣爵士曾任香港上海滙豐銀行大班，確立了香港早期貨幣制度。維多利亞女王銅像日治時期被運走後，現置於銅鑼灣維多利亞公園。"
+        },
+        {
+          cat: "香港海事",
+          q: "位於香港島最東南端、立有香港現存歷史最悠久白色燈塔的法定保護區是？",
+          opts: ["鶴咀 (Cape D'Aguilar)", "赤柱角", "石澳岬", "鴨脷洲南角"],
+          a: 0,
+          fact: "鶴咀燈塔於 1875 年啟用，是香港第一座燈塔；該處亦是香港唯一的海岸保護區。"
+        },
+        {
+          cat: "香港舊稱",
+          q: "香港島上的「銅鑼灣」，在填海前的原始弧形海灣在英文古地圖上曾被標注為？",
+          opts: ["Causeway Bay", "Aberdeen Bay", "Deep Water Bay", "Silvermine Bay"],
+          a: 0,
+          fact: "Causeway 指的是昔日連接天后與銅鑼灣的高士威道海堤（Causeway），因而得名 Causeway Bay。"
+        },
+        {
+          cat: "香港法制",
+          q: "香港的大律師（Barrister）在高等法院及終審法院出庭時，必須佩戴傳統的馬毛假髮，此法袍制度源自哪國普通法傳統？",
+          opts: ["英國", "法國", "羅馬法", "美國"],
+          a: 0,
+          fact: "香港法律制度承襲英國普通法，大律師及法官在特定法院開庭審訊時仍保留佩戴白色捲毛假髮的莊嚴歷史傳統。"
+        },
+        {
+          cat: "城市規劃",
+          q: "香港首座被港英政府正式規劃與開發的第一代「衛星城市 / 新市鎮」是哪裡？",
+          opts: ["荃灣", "沙田", "屯門", "將軍澳"],
+          a: 0,
+          fact: "荃灣於 1950 年代開始填海發展紡織工業與公屋，並於 1961 年正式刊憲成為香港首個衛星市鎮。"
+        },
+        {
+          cat: "香港報章",
+          q: "香港歷史最悠久的英文日報、創刊於 1903 年的是哪一家報紙？",
+          opts: ["《南華早報》(South China Morning Post)", "《英文虎報》(The Standard)", "《香港時報》", "《遠東經濟評論》"],
+          a: 0,
+          fact: "《南華早報》(SCMP) 於 1903 年 11 月 6 日由謝纘泰及克寧漢創立，是香港極具代表性的英文報章。"
+        },
+        {
+          cat: "殖民司法",
+          q: "香港中環奧卑利街的「大館」（Tai Kwun），歷史上是由哪三個核心法定古蹟合組而成的建築群？",
+          opts: ["中區警署、中央裁判司署、域多利監獄", "立法局大樓、終審法院、赤柱監獄", "美利兵房、水警總區總部、域多利監獄", "巡理府、舊灣仔警署、西港城"],
+          a: 0,
+          fact: "「大館」原是警務人員和公眾對前警察總部的俗稱，集執法（中區警署）、司法（中央裁判司署）和懲教（域多利監獄）於一身。"
+        },
+        {
+          cat: "文化傳承",
+          q: "香港大嶼山大澳漁村傳統的「棚屋」，最初建造於潮間帶的主要原因是什麼？",
+          opts: ["蜑家水上人不習慣陸地生活且方便漁船停泊", "躲避山中猛獸", "港英政府禁止水上人購買陸地房地產", "水上租金比陸地貴"],
+          a: 0,
+          fact: "大澳蜑家（水上人）世代以舟為家，後來在泥灘上以木柱搭建高腳屋（棚屋），既能維持水上捕魚習慣，又能安居。"
+        },
+        {
+          cat: "香港氣象史",
+          q: "二戰後在香港引發最嚴重風暴潮災難、導致沙田與大埔嚴重淹沒的超強颱風是 1962 年的？",
+          opts: ["溫黛 (Wanda)", "山竹 (Mangkhut)", "天鴿 (Hato)", "愛倫 (Ellen)"],
+          a: 0,
+          fact: "1962年超強颱風溫黛襲港，吐露港風暴潮高達5米以上，造成過百人喪生，是戰後對香港破壞最慘重的颱風之一。"
+        }
+      ]
+    };
+
+    /* =====================================================================
+     * 3. GAME RUNTIME LOGIC & STATE MANAGEMENT
+     * ===================================================================== */
+    const MONEY_LADDER = [
+      { q: 1,  val: "HK$ 1,000",   num: 1000,    safety: false },
+      { q: 2,  val: "HK$ 2,000",   num: 2000,    safety: false },
+      { q: 3,  val: "HK$ 3,000",   num: 3000,    safety: false },
+      { q: 4,  val: "HK$ 4,000",   num: 4000,    safety: false },
+      { q: 5,  val: "HK$ 5,000",   num: 5000,    safety: true }, // 保險線 1
+      { q: 6,  val: "HK$ 10,000",  num: 10000,   safety: false },
+      { q: 7,  val: "HK$ 20,000",  num: 20000,   safety: false },
+      { q: 8,  val: "HK$ 40,000",  num: 40000,   safety: false },
+      { q: 9,  val: "HK$ 80,000",  num: 80000,   safety: false },
+      { q: 10, val: "HK$ 150,000", num: 150000,  safety: true }, // 保險線 2
+      { q: 11, val: "HK$ 250,000", num: 250000,  safety: false },
+      { q: 12, val: "HK$ 400,000", num: 400000,  safety: false },
+      { q: 13, val: "HK$ 600,000", num: 600000,  safety: false },
+      { q: 14, val: "HK$ 800,000", num: 800000,  safety: false },
+      { q: 15, val: "HK$ 1,000,000", num: 1000000, safety: true } // 終極大獎
+    ];
+
+    class MillionaireGame {
+      constructor() {
+        this.currentStep = 0; // 0 to 14 corresponds to Q1 to Q15
+        this.runQuestions = [];
+        this.currentQuestionData = null;
+        this.isLocked = false;
+        this.used5050 = false;
+        this.usedPhone = false;
+        this.usedAudience = false;
+        this.lifelinesUsedCount = 0;
+        this.mobileLadderVisible = false;
+
+        this.initDOM();
+        this.renderLadder();
+        this.startNewGame();
+      }
+
+      initDOM() {
+        this.qNumDisplay = document.getElementById("currentQuestionNumDisplay");
+        this.qValDisplay = document.getElementById("currentValueDisplay");
+        this.qCatDisplay = document.getElementById("questionCategory");
+        this.qTextDisplay = document.getElementById("questionText");
+        this.safetyBadge = document.getElementById("safetyBadge");
+
+        this.btn5050 = document.getElementById("lifeline5050");
+        this.btnPhone = document.getElementById("lifelinePhone");
+        this.btnAudience = document.getElementById("lifelineAudience");
+
+        // Sound toggle button
+        const soundBtn = document.getElementById("soundToggleBtn");
+        const soundIcon = document.getElementById("soundIcon");
+        soundBtn.addEventListener("click", () => {
+          sound.enabled = !sound.enabled;
+          soundIcon.textContent = sound.enabled ? "🔊" : "🔇";
+        });
+      }
+
+      // 隨機抽選 15 題（5 Easy + 5 Medium + 5 Hard）
+      generateQuestionRun() {
+        const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+        const t1 = shuffle(QUESTION_BANK.tier1).slice(0, 5);
+        const t2 = shuffle(QUESTION_BANK.tier2).slice(0, 5);
+        const t3 = shuffle(QUESTION_BANK.tier3).slice(0, 5);
+        return [...t1, ...t2, ...t3];
+      }
+
+      startNewGame() {
+        this.currentStep = 0;
+        this.runQuestions = this.generateQuestionRun();
+        this.isLocked = false;
+        this.used5050 = false;
+        this.usedPhone = false;
+        this.usedAudience = false;
+        this.lifelinesUsedCount = 0;
+
+        // Reset lifeline button states
+        this.btn5050.disabled = false;
+        this.btnPhone.disabled = false;
+        this.btnAudience.disabled = false;
+
+        document.getElementById("endGameModal").classList.add("hidden");
+        document.getElementById("explanationModal").classList.add("hidden");
+        document.getElementById("walkAwayModal").classList.add("hidden");
+
+        this.loadQuestion(this.currentStep);
+        this.highlightLadder(this.currentStep);
+      }
+
+      loadQuestion(index) {
+        this.isLocked = false;
+        const qRaw = this.runQuestions[index];
+
+        // Shuffle options dynamically so correct answer isn't always in same slot
+        const optionsWithIndex = qRaw.opts.map((opt, i) => ({
+          text: opt,
+          isCorrect: i === qRaw.a
+        }));
+        const shuffled = optionsWithIndex.sort(() => 0.5 - Math.random());
+        const correctIndex = shuffled.findIndex(item => item.isCorrect);
+
+        this.currentQuestionData = {
+          cat: qRaw.cat,
+          q: qRaw.q,
+          opts: shuffled.map(o => o.text),
+          a: correctIndex,
+          fact: qRaw.fact
+        };
+
+        // Render to UI
+        this.qNumDisplay.textContent = `第 ${index + 1} / 15 題`;
+        this.qValDisplay.textContent = MONEY_LADDER[index].val;
+        this.qCatDisplay.textContent = `【${this.currentQuestionData.cat}】`;
+        this.qTextDisplay.textContent = this.currentQuestionData.q;
+
+        // Difficulty info
+        if (index < 5) {
+          this.safetyBadge.textContent = "難度：日常生活 (Q1-Q5)";
+          this.safetyBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-900/40 text-blue-300 border border-blue-500/30";
+        } else if (index < 10) {
+          this.safetyBadge.textContent = "難度：歷史地理 (Q6-Q10)";
+          this.safetyBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-900/40 text-amber-300 border border-amber-500/30";
+        } else {
+          this.safetyBadge.textContent = "難度：香港深層典故 (Q11-Q15)";
+          this.safetyBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-red-900/40 text-red-300 border border-red-500/30";
+        }
+
+        // Reset option buttons
+        for (let i = 0; i < 4; i++) {
+          const btn = document.getElementById(`optBtn${i}`);
+          const txt = document.getElementById(`optText${i}`);
+          btn.className = "option-btn w-full py-4 px-6 text-left flex items-center group";
+          btn.disabled = false;
+          txt.textContent = this.currentQuestionData.opts[i];
+        }
+
+        this.highlightLadder(index);
+      }
+
+      selectOption(choiceIdx) {
+        if (this.isLocked) return;
+        this.isLocked = true;
+        sound.playSelect();
+
+        const selectedBtn = document.getElementById(`optBtn${choiceIdx}`);
+        selectedBtn.classList.add("selected");
+
+        // Dramatic TV game show pause (1.8s) before revealing answer
+        setTimeout(() => {
+          const isCorrect = (choiceIdx === this.currentQuestionData.a);
+
+          if (isCorrect) {
+            sound.playCorrect();
+            selectedBtn.classList.remove("selected");
+            selectedBtn.classList.add("correct");
+
+            setTimeout(() => {
+              this.showExplanationModal(true);
+            }, 1200);
+
+          } else {
+            sound.playWrong();
+            selectedBtn.classList.remove("selected");
+            selectedBtn.classList.add("wrong");
+
+            // Highlight the true correct answer in green
+            const correctBtn = document.getElementById(`optBtn${this.currentQuestionData.a}`);
+            correctBtn.classList.add("correct");
+
+            setTimeout(() => {
+              this.showExplanationModal(false);
+            }, 1500);
+          }
+        }, 1800);
+      }
+
+      showExplanationModal(wasCorrect) {
+        const modal = document.getElementById("explanationModal");
+        const icon = document.getElementById("explanationIcon");
+        const title = document.getElementById("explanationTitle");
+        const content = document.getElementById("explanationContent");
+        const nextBtn = document.getElementById("nextQuestionBtn");
+
+        if (wasCorrect) {
+          icon.textContent = "🎉";
+          title.textContent = "回答正確！";
+          title.className = "text-xl font-bold text-emerald-400";
+          nextBtn.textContent = (this.currentStep === 14) ? "領取 HK$ 1,000,000 大獎！🏆" : "挺進下一題 ➜";
+        } else {
+          icon.textContent = "❌";
+          title.textContent = "很遺憾，答案不正確！";
+          title.className = "text-xl font-bold text-red-400";
+          nextBtn.textContent = "查看結算 ➜";
+        }
+
+        content.innerHTML = `
+          <div class="mb-2"><span class="font-bold text-amber-300">正確答案：</span>${this.currentQuestionData.opts[this.currentQuestionData.a]}</div>
+          <div class="text-blue-100">${this.currentQuestionData.fact}</div>
+        `;
+
+        this.lastQuestionWasCorrect = wasCorrect;
+        modal.classList.remove("hidden");
+      }
+
+      proceedAfterExplanation() {
+        document.getElementById("explanationModal").classList.add("hidden");
+
+        if (this.lastQuestionWasCorrect) {
+          if (this.currentStep === 14) {
+            // Won Grand Prize $1,000,000!
+            sound.playVictory();
+            this.showGameOverModal(true, 1000000);
+          } else {
+            this.currentStep++;
+            this.loadQuestion(this.currentStep);
+          }
+        } else {
+          // Calculate prize based on safety lines (Q5 = $5000, Q10 = $150,000)
+          let finalPrize = 0;
+          if (this.currentStep >= 10) {
+            finalPrize = 150000;
+          } else if (this.currentStep >= 5) {
+            finalPrize = 5000;
+          } else {
+            finalPrize = 0;
+          }
+          this.showGameOverModal(false, finalPrize);
+        }
+      }
+
+      // -------------------------------------------------------------
+      // LIFELINES (三大錦囊)
+      // -------------------------------------------------------------
+      use5050() {
+        if (this.used5050 || this.isLocked) return;
+        this.used5050 = true;
+        this.lifelinesUsedCount++;
+        this.btn5050.disabled = true;
+        sound.playLifeline();
+
+        const correctIdx = this.currentQuestionData.a;
+        let incorrectIndices = [0, 1, 2, 3].filter(idx => idx !== correctIdx);
+        // Randomly pick two incorrect options to eliminate
+        incorrectIndices = incorrectIndices.sort(() => 0.5 - Math.random()).slice(0, 2);
+
+        incorrectIndices.forEach(idx => {
+          const btn = document.getElementById(`optBtn${idx}`);
+          btn.classList.add("eliminated");
+        });
+      }
+
+      usePhoneAFriend() {
+        if (this.usedPhone || this.isLocked) return;
+        this.usedPhone = true;
+        this.lifelinesUsedCount++;
+        this.btnPhone.disabled = true;
+        sound.playLifeline();
+
+        const friends = [
+          { name: "旺角茶餐廳「發哥」", role: "資深地膽 / 食神夥計" },
+          { name: "陳 Sir", role: "中學通識及中史科主任" },
+          { name: "的士司機「志強」", role: "三十年全港街道活地圖" }
+        ];
+        const selectedFriend = friends[Math.floor(Math.random() * friends.length)];
+
+        // Calculate chance of friend being correct based on difficulty
+        const currentQNum = this.currentStep + 1;
+        let accuracy = 0.85;
+        if (currentQNum > 10) accuracy = 0.65;
+
+        const isSmart = Math.random() < accuracy;
+        let suggestedIdx = this.currentQuestionData.a;
+        if (!isSmart) {
+          const wrongOpts = [0, 1, 2, 3].filter(i => i !== this.currentQuestionData.a);
+          suggestedIdx = wrongOpts[Math.floor(Math.random() * wrongOpts.length)];
+        }
+
+        const letters = ["A", "B", "C", "D"];
+        const phoneModal = document.getElementById("phoneModal");
+        document.getElementById("phoneFriendName").textContent = selectedFriend.name;
+        document.getElementById("phoneFriendRole").textContent = selectedFriend.role;
+
+        let dialogues = [
+          `「喂！這題我好有印象！我好有把握答案是【${letters[suggestedIdx]}：${this.currentQuestionData.opts[suggestedIdx]}】，信我啦！」`,
+          `「拿，我平時在香港走跳咁多年，如果無記錯應該係揀【${letters[suggestedIdx]}】，大概有八九成肯定！」`,
+          `「這題有點深度喎！但我直覺覺得【${letters[suggestedIdx]}：${this.currentQuestionData.opts[suggestedIdx]}】最合理，你再對比一下！」`
+        ];
+        document.getElementById("phoneFriendText").textContent = dialogues[Math.floor(Math.random() * dialogues.length)];
+
+        phoneModal.classList.remove("hidden");
+      }
+
+      useAudience() {
+        if (this.usedAudience || this.isLocked) return;
+        this.usedAudience = true;
+        this.lifelinesUsedCount++;
+        this.btnAudience.disabled = true;
+        sound.playLifeline();
+
+        const correctIdx = this.currentQuestionData.a;
+        const currentQNum = this.currentStep + 1;
+
+        // Correct answer percentage skew: higher in easy, slightly more divided in tier 3
+        let correctPercent = (currentQNum <= 5) ? Math.floor(Math.random() * 20) + 70 : (currentQNum <= 10 ? Math.floor(Math.random() * 25) + 50 : Math.floor(Math.random() * 30) + 40);
+
+        let remaining = 100 - correctPercent;
+        const p1 = Math.floor(Math.random() * (remaining * 0.6));
+        remaining -= p1;
+        const p2 = Math.floor(Math.random() * (remaining * 0.7));
+        remaining -= p2;
+        const p3 = remaining;
+
+        const wrongPercentages = [p1, p2, p3].sort(() => 0.5 - Math.random());
+        const resultPercents = [0, 0, 0, 0];
+        resultPercents[correctIdx] = correctPercent;
+
+        let wpIdx = 0;
+        for (let i = 0; i < 4; i++) {
+          if (i !== correctIdx) {
+            resultPercents[i] = wrongPercentages[wpIdx++];
+          }
+        }
+
+        const letters = ["A", "B", "C", "D"];
+        const barsContainer = document.getElementById("audienceBars");
+        barsContainer.innerHTML = "";
+
+        for (let i = 0; i < 4; i++) {
+          const row = document.createElement("div");
+          row.className = "flex items-center gap-2 text-xs sm:text-sm";
+          row.innerHTML = `
+            <span class="w-6 font-bold text-amber-400">${letters[i]}:</span>
+            <div class="flex-1 bg-blue-950/90 rounded-full h-4 overflow-hidden border border-blue-700/50">
+              <div class="bg-gradient-to-r from-cyan-500 to-blue-400 h-full rounded-full transition-all duration-700" style="width: ${resultPercents[i]}%"></div>
+            </div>
+            <span class="w-10 text-right font-mono font-bold text-cyan-200">${resultPercents[i]}%</span>
+          `;
+          barsContainer.appendChild(row);
+        }
+
+        document.getElementById("audienceModal").classList.remove("hidden");
+      }
+
+      // -------------------------------------------------------------
+      // WALK AWAY (見好就收)
+      // -------------------------------------------------------------
+      confirmWalkAway() {
+        if (this.isLocked) return;
+        const walkAwayModal = document.getElementById("walkAwayModal");
+        const prizeText = document.getElementById("walkAwayPrizeText");
+
+        let prizeToTake = (this.currentStep === 0) ? 0 : MONEY_LADDER[this.currentStep - 1].num;
+        prizeText.textContent = `HK$ ${prizeToTake.toLocaleString()}`;
+
+        walkAwayModal.classList.remove("hidden");
+      }
+
+      executeWalkAway() {
+        document.getElementById("walkAwayModal").classList.add("hidden");
+        let prizeToTake = (this.currentStep === 0) ? 0 : MONEY_LADDER[this.currentStep - 1].num;
+        this.showGameOverModal(false, prizeToTake, true);
+      }
+
+      // -------------------------------------------------------------
+      // GAME OVER / RESTART / SHARE
+      // -------------------------------------------------------------
+      showGameOverModal(isVictory, prizeAmount, walkedAway = false) {
+        const modal = document.getElementById("endGameModal");
+        const icon = document.getElementById("endGameIcon");
+        const title = document.getElementById("endGameTitle");
+        const subtitle = document.getElementById("endGameSubtitle");
+        const prize = document.getElementById("endGamePrize");
+        const count = document.getElementById("endGameCount");
+        const lifelines = document.getElementById("endGameLifelines");
+
+        prize.textContent = `HK$ ${prizeAmount.toLocaleString()}`;
+        count.textContent = walkedAway ? `${this.currentStep} 題 (自願離開)` : `${this.currentStep + (isVictory ? 1 : 0)} 題`;
+        lifelines.textContent = `${this.lifelinesUsedCount} / 3`;
+
+        if (isVictory) {
+          icon.textContent = "🏆";
+          title.textContent = "終極登頂：百萬富翁誕生！";
+          subtitle.textContent = "你對香港的食住行、歷史地理與本地文化瞭如指掌，是名副其實的「香港通」！";
+        } else if (walkedAway) {
+          icon.textContent = "💼";
+          title.textContent = "見好就收，智者風範！";
+          subtitle.textContent = "成功避開風險，將豐厚獎金帶回屋企！";
+        } else {
+          icon.textContent = "👏";
+          title.textContent = "挑戰結束！";
+          subtitle.textContent = prizeAmount > 0 ? "恭喜守住保險線獎金！下次再戰百萬大獎！" : "再接再厲！深入體驗香港生活後再來挑戰！";
+        }
+
+        this.finalPrizeAmount = prizeAmount;
+        modal.classList.remove("hidden");
+      }
+
+      restartGame() {
+        this.startNewGame();
+      }
+
+      shareResult() {
+        const text = `我在《Life in the Hong Kong: 百萬富翁》贏得了 HK$ ${this.finalPrizeAmount.toLocaleString()}！你對香港生活與本土冷知識又有幾熟悉？快來挑戰：`;
+        
+        // Use document.execCommand('copy') for iFrame clipboard compatibility
+        const textarea = document.createElement("textarea");
+        textarea.value = text + " " + window.location.href;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          const toast = document.createElement("div");
+          toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 bg-amber-400 text-black px-4 py-2 rounded-lg font-bold text-xs shadow-xl z-50 animate-bounce";
+          toast.textContent = "已複製戰績到剪貼簿！可貼上與朋友分享！";
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2500);
+        } catch (err) {
+          console.error("Copy failed", err);
+        }
+        document.body.removeChild(textarea);
+      }
+
+      // -------------------------------------------------------------
+      // MONEY LADDER RENDER & ANIMATION
+      // -------------------------------------------------------------
+      renderLadder() {
+        const container = document.getElementById("ladderContainer");
+        container.innerHTML = "";
+
+        // Reverse so Q15 is at top and Q1 is at bottom
+        for (let i = 14; i >= 0; i--) {
+          const item = MONEY_LADDER[i];
+          const div = document.createElement("div");
+          div.id = `ladderRung${i}`;
+          
+          let baseClasses = "px-3 py-1.5 rounded-lg flex items-center justify-between transition-all duration-300";
+          if (item.safety) {
+            // Milestone / Safety Net Rung
+            baseClasses += " text-amber-300 font-extrabold bg-blue-900/40 border border-amber-500/40";
+          } else {
+            baseClasses += " text-blue-300 bg-transparent";
+          }
+
+          div.className = baseClasses;
+          div.innerHTML = `
+            <span class="w-7 text-xs ${item.safety ? 'text-amber-400' : 'text-blue-400'}">${item.q}</span>
+            <span class="tracking-wide">${item.val}</span>
+            <span class="text-xs">${item.safety ? '🛡️' : ''}</span>
+          `;
+          container.appendChild(div);
+        }
+      }
+
+      highlightLadder(activeStep) {
+        for (let i = 0; i < 15; i++) {
+          const rung = document.getElementById(`ladderRung${i}`);
+          const item = MONEY_LADDER[i];
+
+          if (i === activeStep) {
+            // Active current target
+            rung.className = "px-3 py-1.5 rounded-lg flex items-center justify-between bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-black shadow-lg scale-105 border-2 border-white";
+          } else if (i < activeStep) {
+            // Already passed
+            rung.className = "px-3 py-1.5 rounded-lg flex items-center justify-between text-emerald-400 font-bold bg-emerald-950/30 opacity-75";
+          } else {
+            // Upcoming
+            if (item.safety) {
+              rung.className = "px-3 py-1.5 rounded-lg flex items-center justify-between text-amber-300 font-extrabold bg-blue-900/40 border border-amber-500/40";
+            } else {
+              rung.className = "px-3 py-1.5 rounded-lg flex items-center justify-between text-blue-300 bg-transparent";
+            }
+          }
+        }
+      }
+
+      toggleMobileLadder() {
+        const sidebar = document.getElementById("ladderSidebar");
+        this.mobileLadderVisible = !this.mobileLadderVisible;
+        if (this.mobileLadderVisible) {
+          sidebar.classList.remove("hidden");
+          sidebar.classList.add("fixed", "inset-x-4", "top-16", "z-50", "max-h-[85vh]", "overflow-y-auto");
+        } else {
+          sidebar.classList.add("hidden");
+          sidebar.classList.remove("fixed", "inset-x-4", "top-16", "z-50", "max-h-[85vh]", "overflow-y-auto");
+        }
+      }
+    }
+
+    // Global Instance
+    let millionaireGame;
+    window.addEventListener("DOMContentLoaded", () => {
+      millionaireGame = new MillionaireGame();
+    });
+  </script>
+</body>
+</html>
